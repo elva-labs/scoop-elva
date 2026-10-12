@@ -1,0 +1,24 @@
+name: Update manifests
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "20 */4 * * *"
+
+permissions:
+  contents: write
+
+concurrency: scoop-manifest-update
+
+jobs:
+  update:
+    if: github.repository == 'elva-labs/scoop-elva'
+    runs-on: windows-2025
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Update published manifests
+        if: hashFiles('bucket/*.json') != ''
+        uses: ScoopInstaller/GithubActions@5bceeda181721d9d10a18fdcc3ddca6f33467ae6
+        env:
+          SKIP_UPDATED: "1"
